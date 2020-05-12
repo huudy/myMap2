@@ -1,0 +1,53 @@
+<div class="card card-login">
+    <form action="" class="form" method="">
+        <div class="card-header">
+            <img alt="Card image" class="card-img" src="assets/img/square1.png" />
+
+            <h4 class="card-title">New Place</h4>
+            <button aria-label="Close" class="close" data-dismiss="modal" type="button" (click)="onCancel()">
+                <i class="tim-icons icon-simple-remove"> </i>
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="input-group input-lg">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="tim-icons icon-single-02"> </i>
+                    </span>
+                </div>
+                <input class="form-control" placeholder="First Name..." type="text" [(ngModel)]="address"
+                    [ngModelOptions]="{standalone: true}" />
+            </div>
+            <div class="input-group input-lg">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="tim-icons icon-caps-small"> </i>
+                    </span>
+                </div>
+                <input class="form-control" placeholder="Last Name..." type="text" />
+            </div>
+        </div>
+        <div class="dropzone" dropzone (hovered)="toggleHover($event)" (dropped)="onDrop($event)"
+            [class.hovering]="isHovering">
+            <p>Drag and Drop a File</p>
+            <i class="material-icons">note_add</i>
+            <div class="files">
+                <label class="file-label">
+                    <input type="file" (change)="onDrop($event.target.files)">
+                </label>
+            </div>
+        </div>
+
+        <div class="input-group input-lg">
+
+            <!-- <h4 class="card-title">Regular Image</h4> -->
+            <app-picture-upload></app-picture-upload>
+        </div>
+        <div class="card-footer text-center">
+            <a class="btn btn-primary btn-round btn-lg btn-block" (click)="onConfirm()">
+                Save
+            </a>
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,167 @@
+<agm-map #gm [latitude]="mapSvc.lat" [longitude]="mapSvc.lng" [zoom]="mapSvc.zoom" [disableDefaultUI]="false"
+  [zoomControl]="true" [scrollwheel]="null" (mapClick)="mapClicked($event)">
+  <div class="form-group">
+    <label>Enter address</label>
+    <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
+      placeholder="Search Nearest Location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" #search>
+  </div>
+  <agm-marker *ngFor="let m of marker$|async; let i = index" (markerClick)="loginModal.show()" [latitude]="m.marker.lat"
+    [longitude]="m.marker.lng" [label]="m.marker.label" [markerDraggable]="m.marker.draggable" [iconUrl]="m.marker.icon"
+    (dragEnd)="markerDragEnd(m.marker, $event)" (mouseOver)="onMouseOver(infoWindow, $event)"
+    (mouseOut)="onMouseOut(infoWindow, $event)" data-target="#loginModal">
+    <agm-info-window [disableAutoPan]="false" #infoWindow>
+      <div>
+        {{m.marker.name}}
+        {{m.rating}}
+      </div>
+      <div>
+        <a (click)="onClickInfoView({id:m.id})" class="btn btn-attention pull-right">Daje <i
+            class="fa fa-angle-double-right"></i></a>
+      </div>
+    </agm-info-window>
+  </agm-marker>
+  <agm-circle [latitude]="lat + 0.3" [longitude]="lng" [radius]="5000" [fillColor]="'red'" [circleDraggable]="true"
+    [editable]="true">
+  </agm-circle>
+</agm-map>
+<app-float-btn (click)="open(modal_mini, 'modal_mini', 'sm')"></app-float-btn>
+<ng-template #modal_mini let-c="close" let-d="dismiss">
+  <div class="modal-body">
+    <p>Add memories to the place</p>
+    <!-- <uploader></uploader> -->
+    <div class="row">
+      <div class="col-md-5 col-sm-8">
+        <h4 class="card-title">Regular Image</h4>
+        <app-picture-upload></app-picture-upload>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-link btn-neutral" (click)="c('Close click')"><i
+        class="material-icons">save</i>Save</button>
+  </div>
+</ng-template>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add memories to that place!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="newMarkerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="dateOfBirth">Is this the address?</label>
+        <div class="input-group">
+          <input formControlName="address" id="address" class="form-control">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
+          </div>
+        </div>
+        <label for="dateOfBirth">Add pictures</label>
+        <div class="input-group">
+          <uploader></uploader>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #classic let-c="close" let-d="dismiss">
+  <div class="modal-header justify-content-center">
+    <button type="button" class="close" (click)="d('Cross click')">
+      <i class="now-ui-icons ui-1_simple-remove"></i>
+    </button>
+    <h4 class="title title-up">Modal title</h4>
+  </div>
+  <div class="modal-body">
+    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind
+      texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small
+      river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic
+      country, in which roasted parts of sentences fly into your mouth.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default">Nice Button</button>
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #errorModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Wrong address</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="dateOfBirth">Uppss we cannot find an address here</label>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+<div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade" #loginModal="bs-modal" id="loginModal"
+  role="dialog" tabindex="-1">
+  <div class="modal-dialog modal-login">
+    <div class="modal-content">
+      <div class="card card-login">
+        <form action="" class="form" method="">
+          <div class="card-header">
+            <img alt="Card image" class="card-img" src="assets/img/square-purple-1.png" />
+
+            <h4 class="card-title">Login</h4>
+            <button aria-label="Close" class="close" data-dismiss="modal" type="button" (click)="loginModal.hide()">
+              <i class="tim-icons icon-simple-remove"> </i>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="input-group input-lg">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="tim-icons icon-single-02"> </i>
+                </span>
+              </div>
+              <input class="form-control" placeholder="First Name..." type="text" />
+            </div>
+            <div class="input-group input-lg">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="tim-icons icon-caps-small"> </i>
+                </span>
+              </div>
+              <input class="form-control" placeholder="Last Name..." type="text" />
+            </div>
+          </div>
+          <div class="card-footer text-center">
+            <a class="btn btn-primary btn-round btn-lg btn-block" href="javascript:void(0)">
+              Get Started
+            </a>
+          </div>
+          <div class="pull-left ml-3 mb-3">
+            <h6>
+              <a class="link footer-link" href="javascript:void(0)">
+                Create Account
+              </a>
+            </h6>
+          </div>
+          <div class="pull-right mr-3 mb-3">
+            <h6>
+              <a class="link footer-link" href="javascript:void(0)">
+                Need Help?
+              </a>
+            </h6>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
